@@ -6,18 +6,36 @@ import { WeatherService } from './services/weather.service'
   styleUrls: ['./app.component.css']
 })
 export class AppComponent implements OnInit {
+
+  weather;
+
   constructor(private weatherService: WeatherService){
 
   }
   ngOnInit(){
-    this.weatherService.getWeather('ezeiza',"ar")
+
+  }
+
+  getWeather(cityName: string, countryCode: string){
+    this.weatherService.getWeather(cityName,countryCode)
       .subscribe(
-        res => console.log(res),
+        res => {
+          this.weather = res;
+          console.log(res)
+        },
         err => console.log(err)
       )
   }
-  submitLocation(cityName, countryCode){
-    console.log(cityName.value,countryCode.value)
+
+  submitLocation(cityName: HTMLInputElement, countryCode: HTMLInputElement){
+    if(cityName.value && countryCode.value){
+      this.getWeather(cityName.value,countryCode.value)
+      cityName.value = '';
+      countryCode.value = '';
+    } else {
+      alert('Please. Insert some values')
+    }
+    cityName.focus();
     return false;
   }
 }
